@@ -45,13 +45,13 @@ class Quoridor:
             self.murs = murs
         self.etat = {'joueurs': self.players, 'murs': self.murs}
         for i, val in enumerate(joueurs):
-            if val is str:
+            if isinstance(val, str):
                 self.players[i]['nom'] = val
                 if i == 0:
                     self.players[i]['pos'] = (5, 1)
                 elif i == 1:
                     self.players[i]['pos'] = (5, 9)
-            elif val is dict:
+            elif isinstance(val, dict):
                 self.players[i]['nom'] = val['nom']
                 self.players[i]['murs'] = val['murs']
                 self.players[i]['pos'] = val['pos']
@@ -172,7 +172,7 @@ class Quoridor:
         """
         TestPlayersNumbers(joueur)
 
-        if position[0] not in range(10, 1) or position[1] not in range(10, 1):
+        if position[0] not in range(1, 10) or position[1] not in range(1, 10):
             raise QuoridorError("Position given is outside of board")
 
         if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
@@ -211,7 +211,7 @@ class Quoridor:
 
         positionVertical = (position[0], position[1] - 1)
 
-        self.etat["joueurs"][joueur]["pos"] = position
+        self.etat["joueurs"][joueur - 1]["pos"] = position
 
     def état_partie(self):
         """
