@@ -105,6 +105,39 @@ class Quoridor:
 
         if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
+        
+        positionJoueur = self.etat["joueurs"][joueur]["pos"]
+
+        mouvementX = position[0] - self.etat["joueurs"][joueur]["pos"][0]
+        mouvementY = position[1] - self.etat["joueurs"][joueur]["pos"][1]
+
+        if(mouvementY > 0):
+            positionHorizontal = (position[0], position[1] - 1)
+            positionAvantHorizontal = (position[0] - 1, position[1] - 1)
+
+            if positionHorizontal in self.etat['murs']['horizontaux'] or positionAvantHorizontal in self.etat['murs']['horizontaux']:
+                raise QuoridorError("Position given is invalid (occupied)")
+        elif(mouvementY < 0):
+            positionHorizontal = (position[0], position[1])
+            positionAvantHorizontal = (position[0] - 1, position[1])
+
+            if positionHorizontal in self.etat['murs']['horizontaux'] or positionAvantHorizontal in self.etat['murs']['horizontaux']:
+                raise QuoridorError("Position given is invalid (occupied)")
+
+        if(mouvementX > 0):
+            positionVertical = (position[0] - 1, position[1])
+            positionAvantVertical = (position[0] - 1, position[1] - 1)
+
+            if positionVertical in self.etat['murs']['verticaux'] or positionAvantVertical in self.etat['murs']['verticaux']:
+                raise QuoridorError("Position given is invalid (occupied)")
+        elif(mouvementX < 0):
+            positionVertical = (position[0], position[1])
+            positionAvantVertical = (position[0], position[1] - 1)
+
+            if positionVertical in self.etat['murs']['verticaux'] or positionAvantVertical in self.etat['murs']['verticaux']:
+                raise QuoridorError("Position given is invalid (occupied)")
+
+        positionVertical = (position[0], position[1] - 1)
 
         self.etat["joueurs"][joueur]["pos"] = position
 
@@ -203,7 +236,6 @@ class Quoridor:
                 raise QuoridorError(f"There is already a wall at {position}")
 
             self.etat['murs']['horizontaux'] += [position[0], position[1]]
-            self.etat['joueurs'][joueur]["murs"] -= 1
         else:
             positionVerticalAvant = (position[0], position[1] - 1)
             positionVerticalApres = (position[0], position[1] + 1)
@@ -212,8 +244,8 @@ class Quoridor:
                 raise QuoridorError(f"There is already a wall at {position}")
 
             self.etat['murs']['verticaux'] += [position[0], position[1]]
-            self.etat['joueurs'][joueur]["murs"] -= 1
 
+        self.etat['joueurs'][joueur]["murs"] -= 1
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     """
