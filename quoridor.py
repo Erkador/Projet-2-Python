@@ -1,25 +1,38 @@
 from collections.abc import Iterable
 import networkx as nx
 
+
 class QuoridorError(Exception):
     pass
+
+
+def TestPlayersNumbers(joueur):
+    if joueur not in [1, 2]:
+        raise QuoridorError(f"Player {joueur} is not a valid #")
+
+
+def OtherPlayer(joueur):
+    if joueur == 1:
+        return 0
+    else:
+        return 1
 
 
 class Quoridor:
 
     def __init__(self, joueurs, murs=None):
         """
-        Initialiser une partie de Quoridor avec les joueurs et les murs spécifiés, 
+        Initialiser une partie de Quoridor avec les joueurs et les murs spécifiés,
         en s'assurant de faire une copie profonde de tout ce qui a besoin d'être copié.
 
-        //:param joueurs: un itérable de deux joueurs dont le premier est toujours celui qui 
-        //débute la partie. Un joueur est soit une chaîne de caractères soit un dictionnaire. 
-        //Dans le cas d'une chaîne, il s'agit du nom du joueur. Selon le rang du joueur dans 
+        //:param joueurs: un itérable de deux joueurs dont le premier est toujours celui qui
+        //débute la partie. Un joueur est soit une chaîne de caractères soit un dictionnaire.
+        //Dans le cas d'une chaîne, il s'agit du nom du joueur. Selon le rang du joueur dans
         //l'itérable, sa position est soit (5,1) soit (5,9), et chaque joueur peut initialement
-        //placer 10 murs. Dans le cas où l'argument est un dictionnaire, celui-ci doit contenir 
-        //une clé 'nom' identifiant le joueur, une clé 'murs' spécifiant le nombre de murs qu'il 
+        //placer 10 murs. Dans le cas où l'argument est un dictionnaire, celui-ci doit contenir
+        //une clé 'nom' identifiant le joueur, une clé 'murs' spécifiant le nombre de murs qu'il
         //peut encore placer, et une clé 'pos' qui spécifie sa position (x, y) actuelle.
-        
+
         :param murs: un dictionnaire contenant une clé 'horizontaux' associée à la liste des
         positions (x, y) des murs horizontaux, et une clé 'verticaux' associée à la liste des
         positions (x, y) des murs verticaux. Par défaut, il n'y a aucun mur placé sur le jeu.
@@ -39,7 +52,7 @@ class Quoridor:
             self.murs = {
                 'horizontaux': [],
                 'verticaux': []
-            }
+                         }
         else:
             self.murs = murs
         self.etat = {'joueurs': self.players, 'murs': self.murs}
@@ -77,14 +90,16 @@ class Quoridor:
         if placed_walls + placable_walls != 20:
             raise QuoridorError("Number of walls not equal to 20")
 
-
     def __str__(self):
         """
-        Produire la représentation en art ascii correspondant à l'état actuel de la partie. 
+        Produire la représentation en art ascii correspondant à l'état actuel de la partie.
         Cette représentation est la même que celle du TP précédent.
 
         :returns: la chaîne de caractères de la représentation.
         """
+        import boarder2 as boarder
+        a = boarder.board(self.etat)
+        return(a.board_up())
 
     def déplacer_jeton(self, joueur, position):
         """
@@ -96,6 +111,15 @@ class Quoridor:
         :raises QuoridorError: la position est invalide (en dehors du damier).
         :raises QuoridorError: la position est invalide pour l'état actuel du jeu.
         """
+        TestPlayersNumbers(joueur)
+
+        if position[0] not in range(10, 1) or position[1] not in range(10, 1):
+            raise QuoridorError("Position given is outside of board")
+
+        if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
+            raise QuoridorError("Position given is invalid (occupied)")
+
+        self.etat["joueurs"][joueur]["pos"] = position
 
     def état_partie(self):
         """
@@ -112,10 +136,10 @@ class Quoridor:
                 'verticaux': [...],
             }
         }
-        
-        où la clé 'nom' d'un joueur est associée à son nom, la clé 'murs' est associée 
-        au nombre de murs qu'il peut encore placer sur ce damier, et la clé 'pos' est 
-        associée à sa position sur le damier. Une position est représentée par un tuple 
+
+        où la clé 'nom' d'un joueur est associée à son nom, la clé 'murs' est associée
+        au nombre de murs qu'il peut encore placer sur ce damier, et la clé 'pos' est
+        associée à sa position sur le damier. Une position est représentée par un tuple
         de deux coordonnées x et y, où 1<=x<=9 et 1<=y<=9.
 
         Les murs actuellement placés sur le damier sont énumérés dans deux listes de
@@ -124,25 +148,32 @@ class Quoridor:
         situe entre les lignes y-1 et y, et bloque les colonnes x et x+1. De même, un
         mur vertical se situe entre les colonnes x-1 et x, et bloque les lignes x et x+1.
         """
+        return self.etat
 
     def jouer_coup(self, joueur):
         """
-        Pour le joueur spécifié, jouer automatiquement son meilleur coup pour l'état actuel 
-        de la partie. Ce coup est soit le déplacement de son jeton, soit le placement d'un 
+        Pour le joueur spécifié, jouer automatiquement son meilleur coup pour l'état actuel
+        de la partie. Ce coup est soit le déplacement de son jeton, soit le placement d'un
         mur horizontal ou vertical.
 
         :param joueur: un entier spécifiant le numéro du joueur (1 ou 2).
         :raises QuoridorError: le numéro du joueur est autre que 1 ou 2.
         :raises QuoridorError: la partie est déjà terminée.
         """
+        TestPlayersNumbers(joueur)
+
+        if self.partie_terminée() is str:
+            raise QuoridorError(f"Player {joueur} tried to run a finished game")
+
+        self.last_player = joueur
 
         graphe = construire_graphe(
-        [joueur['pos'] for joueur in self.etat['joueurs']], 
-        self.etat['murs']['horizontaux'],
-        self.etat['murs']['verticaux']
-        )
+            [joueur['pos'] for joueur in self.etat['joueurs']],
+            self.etat['murs']['horizontaux'],
+            self.etat['murs']['verticaux']
+                                    )
 
-        return nx.shortest_path(graphe, (5,6), 'B' + str(joueur))[1]
+        return nx.shortest_path(graphe, (5, 6), 'B' + str(joueur))[1]
 
     def partie_terminée(self):
         """
@@ -150,6 +181,15 @@ class Quoridor:
 
         :returns: le nom du gagnant si la partie est terminée; False autrement.
         """
+        if self.last_player == 1:
+            goal = 9
+        else:
+            goal = 1
+
+        if self.etat["joueurs"][self.last_player]["pos"][1] == goal:
+            return self.etat["joueurs"][self.last_player]["nom"]
+        else:
+            return False
 
     def placer_mur(self, joueur: int, position: tuple, orientation: str):
         """
@@ -163,6 +203,10 @@ class Quoridor:
         :raises QuoridorError: la position est invalide pour cette orientation.
         :raises QuoridorError: le joueur a déjà placé tous ses murs.
         """
+        TestPlayersNumbers(joueur)
+
+        if self.etat["joueur"][joueur]["murs"] == 0:
+            raise QuoridorError(f"Player {joueur} has no more walls")
 
         if(orientation == "horizontal"):
             self.etat['murs']['horizontaux'] += [position[0], position[1]]
@@ -171,8 +215,8 @@ class Quoridor:
             self.etat['murs']['verticaux'] += [position[0], position[1]]
             self.etat['joueurs'][joueur]["murs"] -= 1
 
+
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
-    
     """
     Crée le graphe des déplacements admissibles pour les joueurs.
 
