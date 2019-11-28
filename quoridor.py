@@ -5,19 +5,6 @@ import networkx as nx
 class QuoridorError(Exception):
     pass
 
-
-def TestPlayersNumbers(joueur):
-    if joueur not in [1, 2]:
-        raise QuoridorError(f"Player {joueur} is not a valid #")
-
-
-def OtherPlayer(joueur):
-    if joueur == 1:
-        return 0
-    else:
-        return 1
-
-
 class Quoridor:
 
     def __init__(self, joueurs, murs=None):
@@ -209,9 +196,21 @@ class Quoridor:
             raise QuoridorError(f"Player {joueur} has no more walls")
 
         if(orientation == "horizontal"):
+            positionHorizontalAvant = (position[0] - 1, position[1])
+            positionHorizontalApres = (position[0] + 1, position[1])
+
+            if position in self.etat['murs']['horizontaux'] or positionHorizontalAvant in self.etat['murs']['horizontaux'] or positionHorizontalApres in self.etat['murs']['horizontaux']:
+                raise QuoridorError(f"There is already a wall at {position}")
+
             self.etat['murs']['horizontaux'] += [position[0], position[1]]
             self.etat['joueurs'][joueur]["murs"] -= 1
         else:
+            positionVerticalAvant = (position[0], position[1] - 1)
+            positionVerticalApres = (position[0], position[1] + 1)
+
+            if position in self.etat['murs']['verticaux'] or positionVerticalAvant in self.etat['murs']['verticaux'] or positionVerticalApres in self.etat['murs']['verticaux']:
+                raise QuoridorError(f"There is already a wall at {position}")
+
             self.etat['murs']['verticaux'] += [position[0], position[1]]
             self.etat['joueurs'][joueur]["murs"] -= 1
 
@@ -282,3 +281,14 @@ def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
         graphe.add_edge((x, 1), 'B2')
 
     return graphe
+
+def TestPlayersNumbers(joueur):
+    if joueur not in [1, 2]:
+        raise QuoridorError(f"Player {joueur} is not a valid #")
+
+
+def OtherPlayer(joueur):
+    if joueur == 1:
+        return 0
+    else:
+        return 1
