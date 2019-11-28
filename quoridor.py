@@ -265,7 +265,7 @@ class Quoridor:
             self.etat['murs']['verticaux']
                                     )
 
-        return nx.shortest_path(graphe, (5, 6), 'B' + str(joueur))[1]
+        self.déplacer_jeton(joueur, nx.shortest_path(graphe, joueur['pos'], 'B' + str(joueur))[1])
 
     def partie_terminée(self):
         """
