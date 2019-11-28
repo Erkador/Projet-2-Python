@@ -178,10 +178,10 @@ class Quoridor:
         if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
         
-        positionJoueur = self.etat["joueurs"][joueur]["pos"]
+        positionJoueur = self.etat["joueurs"][joueur - 1]["pos"]
 
-        mouvementX = position[0] - self.etat["joueurs"][joueur]["pos"][0]
-        mouvementY = position[1] - self.etat["joueurs"][joueur]["pos"][1]
+        mouvementX = position[0] - self.etat["joueurs"][joueur - 1]["pos"][0]
+        mouvementY = position[1] - self.etat["joueurs"][joueur - 1]["pos"][1]
 
         if(mouvementY > 0):
             positionHorizontal = (position[0], position[1] - 1)
@@ -210,7 +210,7 @@ class Quoridor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         positionVertical = (position[0], position[1] - 1)
-
+        self.last_player = joueur
         self.etat["joueurs"][joueur - 1]["pos"] = position
 
     def état_partie(self):
@@ -265,7 +265,7 @@ class Quoridor:
             self.etat['murs']['verticaux']
                                     )
 
-        self.déplacer_jeton(joueur, nx.shortest_path(graphe, joueur['pos'], 'B' + str(joueur))[1])
+        self.déplacer_jeton(joueur, nx.shortest_path(graphe, self.etat['joueurs'][joueur - 1]['pos'], 'B' + str(joueur))[1])
 
     def partie_terminée(self):
         """
@@ -278,8 +278,8 @@ class Quoridor:
         else:
             goal = 1
 
-        if self.etat["joueurs"][self.last_player]["pos"][1] == goal:
-            return self.etat["joueurs"][self.last_player]["nom"]
+        if self.etat["joueurs"][self.last_player - 1]["pos"][1] == goal:
+            return self.etat["joueurs"][self.last_player - 1]["nom"]
         else:
             return False
 
