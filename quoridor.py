@@ -89,7 +89,7 @@ class Quoridor:
         murs_h = self.etat["murs"]["horizontaux"]
         murs_v = self.etat["murs"]["verticaux"]
         nom_1 = self.etat["joueurs"][0]["nom"]
-        nom_2 = "automate"
+        nom_2 = self.etat["joueurs"][1]["nom"]
         pos_1 = self.etat["joueurs"][0]["pos"]
         pos_2 = self.etat["joueurs"][1]["pos"]
         sortie += f"Légende: 1={nom_1}, 2={nom_2}\n"
