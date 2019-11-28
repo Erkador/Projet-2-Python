@@ -89,7 +89,7 @@ class Quoridor:
         murs_h = self.etat["murs"]["horizontaux"]
         murs_v = self.etat["murs"]["verticaux"]
         nom_1 = self.etat["joueurs"][0]["nom"]
-        nom_2 = "automate"
+        nom_2 = self.etat["joueurs"][1]["nom"]
         pos_1 = self.etat["joueurs"][0]["pos"]
         pos_2 = self.etat["joueurs"][1]["pos"]
         sortie += f"Légende: 1={nom_1}, 2={nom_2}\n"
@@ -267,8 +267,8 @@ class Quoridor:
         if self.etat["joueur"][joueur]["murs"] == 0:
             raise QuoridorError(f"Player {joueur} has no more walls")
 
-            MursHor = self.etat['murs']['horizontaux']
-            MursVer = self.etat['murs']['verticaux']
+        MursHor = self.etat['murs']['horizontaux']
+        MursVer = self.etat['murs']['verticaux']
 
         if(orientation == "horizontal"):
             posHorAvant = (position[0] - 1, position[1])
