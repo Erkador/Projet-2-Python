@@ -265,7 +265,7 @@ class Quoridor:
             self.etat['murs']['verticaux']
                                     )
 
-        return nx.shortest_path(graphe, (5, 6), 'B' + str(joueur))[1]
+        self.déplacer_jeton(joueur, nx.shortest_path(graphe, joueur['pos'], 'B' + str(joueur))[1])
 
     def partie_terminée(self):
         """
@@ -300,8 +300,8 @@ class Quoridor:
         if self.etat["joueur"][joueur]["murs"] == 0:
             raise QuoridorError(f"Player {joueur} has no more walls")
 
-            MursHor = self.etat['murs']['horizontaux']
-            MursVer = self.etat['murs']['verticaux']
+        MursHor = self.etat['murs']['horizontaux']
+        MursVer = self.etat['murs']['verticaux']
 
         if(orientation == "horizontal"):
             posHorAvant = (position[0] - 1, position[1])
