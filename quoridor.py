@@ -203,10 +203,17 @@ class Quoridor:
         if self.etat["joueurs"][OtherPlayer(joueur) - 1]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
 
+        if self.etat["joueurs"][joueur - 1]["pos"] == position:
+            raise QuoridorError("Player cannot stay immobile")
+
         positionJoueur = self.etat["joueurs"][joueur - 1]["pos"]  # what is this ??? -----------888 DAVE
 
         mouvementX = position[0] - self.etat["joueurs"][joueur - 1]["pos"][0]
         mouvementY = position[1] - self.etat["joueurs"][joueur - 1]["pos"][1]
+
+        if abs(position[0] - mouvementX) + abs(position[1] - mouvementY) > 2:
+            raise QuoridorError("Player tried to move more than 2 tiles")
+
         MursHor = self.etat['murs']['horizontaux']
         MursVer = self.etat['murs']['verticaux']
 
