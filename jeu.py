@@ -15,7 +15,8 @@ if __name__ == "__main__":
         "verticaux": [[6, 2], [4, 4], [2, 6], [7, 5], [7, 7]]
                }
 
-    jeu = quoridor.Quoridor(joueurs, murs)
+    # jeu = quoridor.Quoridor(joueurs, murs)
+    jeu = quoridor.Quoridor(["j1", "j2"])
 
     # print(jeu.etat['murs']['horizontaux'])
     # print(jeu.etat['murs']['verticaux'])

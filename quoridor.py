@@ -225,29 +225,29 @@ class Quoridor:
         MursVer = self.etat['murs']['verticaux']
 
         if mouvementY > 0:
-            posHor = (position[0], position[1] - 1)
-            posAvantHor = (position[0] - 1, position[1] - 1)
+            posHor = (position[0], position[1])
+            posAvantHor = ((position[0] - 1), position[1])
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementY < 0:
-            posHor = (position[0], position[1])
-            posAvantHor = (position[0] - 1, position[1])
+            posHor = (position[0], (position[1] + 1))
+            posAvantHor = ((position[0] - 1), (position[1] + 1))
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         if mouvementX > 0:
-            posVer = (position[0] - 1, position[1])
-            posAvantVer = (position[0] - 1, position[1] - 1)
+            posVer = (position[0], position[1])
+            posAvantVer = (position[0], position[1] - 1)
 
             if posVer in MursVer or posAvantVer in MursVer:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementX < 0:
-            posVer = (position[0], position[1])
-            posAvantVer = (position[0], position[1] - 1)
+            posVer = ((position[0] + 1), position[1])
+            posAvantVer = ((position[0] + 1), position[1] - 1)
 
             if posVer in MursVer or posAvantVer in MursVer:
                 raise QuoridorError("Position given is invalid (occupied)")
