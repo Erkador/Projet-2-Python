@@ -29,7 +29,7 @@ class Quoridor:
         if not isinstance(joueurs, Iterable):
             raise QuoridorError("Not iterable")
         if len(joueurs) > 2:
-            raise QuoridorError("Iterable not equal to 2")
+            raise QuoridorError("more than two players given")
         if murs and murs != type(dict):
             raise QuoridorError("Murs is present but not dict")
         self.players = [
@@ -44,6 +44,7 @@ class Quoridor:
         else:
             self.murs = murs
         self.etat = {'joueurs': self.players, 'murs': self.murs}
+
         for i, val in enumerate(joueurs):
             if isinstance(val, str):
                 self.players[i]['nom'] = val
@@ -55,28 +56,35 @@ class Quoridor:
                 self.players[i]['nom'] = val['nom']
                 self.players[i]['murs'] = val['murs']
                 self.players[i]['pos'] = val['pos']
+
         for i, val in enumerate(self.players):
             x, y = self.players[i]['pos']
             if x < 1 or x > 9 or y < 1 or y > 9:
                 raise QuoridorError("Player position out of bounds")
             if self.players[i]['murs'] > 10 or self.players[i]['murs'] < 0:
                 raise QuoridorError("Number of walls invalid")
+
         if len(self.murs['horizontaux']) > 0:
             for i in self.murs['horizontaux']:
                 x, y = i[0], i[1]
                 if x < 1 or x > 8 or y < 2 or y > 9:
                     raise QuoridorError("Horizontal wall out of bounds")
+
         if len(self.murs['verticaux']) > 0:
             for i in self.murs['verticaux']:
                 x, y = i[0], i[1]
                 if x < 2 or x > 9 or y < 1 or y > 8:
                     raise QuoridorError("Vertical wall out of bounds")
+
         placed_walls = 0
         placed_walls += len(self.murs['horizontaux']) + len(self.murs['verticaux'])
         placable_walls = 0
         placable_walls += self.players[0]['murs'] + self.players[1]['murs']
+
         if placed_walls + placable_walls != 20:
             raise QuoridorError("Number of walls not equal to 20")
+
+        self.last_player = 2
 
     def __str__(self):
         """
@@ -94,57 +102,74 @@ class Quoridor:
         pos_2 = self.etat["joueurs"][1]["pos"]
         sortie += f"Légende: 1={nom_1}, 2={nom_2}\n"
         sortie += "   -----------------------------------\n"
-        grille = [["9", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["8", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["7", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["6", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["5", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["4", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["3", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["2", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"],
-                [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                " ", " ", " ", " ", "|", "\n"],
-                ["1", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".",
-                " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ", ".", " ",
-                " ", " ", ".", " ", "|", "\n"]]
+        grille = [["9", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["8", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["7", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["6", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["5", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["4", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["3", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["2", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"],
+                  [" ", " ", "|", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                   " ", " ", "|", "\n"],
+                  ["1", " ", "|", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", " ", " ", ".", " ", " ", " ", ".", " ", " ", " ",
+                   ".", " ", "|", "\n"]]
         for i in murs_h:
             for e in range(7):
                 grille[19 - 2 * i[1]][4 * i[0] - 1 + e] = "-"
@@ -175,43 +200,48 @@ class Quoridor:
         if position[0] not in range(1, 10) or position[1] not in range(1, 10):
             raise QuoridorError("Position given is outside of board")
 
-        if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
+        if self.etat["joueurs"][OtherPlayer(joueur) - 1]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
 
-        positionJoueur = self.etat["joueurs"][joueur - 1]["pos"]
+        positionJoueur = self.etat["joueurs"][joueur - 1]["pos"]  # what is this ??? -----------888 DAVE
 
         mouvementX = position[0] - self.etat["joueurs"][joueur - 1]["pos"][0]
         mouvementY = position[1] - self.etat["joueurs"][joueur - 1]["pos"][1]
+        MursHor = self.etat['murs']['horizontaux']
+        MursVer = self.etat['murs']['verticaux']
 
-        if(mouvementY > 0):
-            positionHorizontal = (position[0], position[1] - 1)
-            positionAvantHorizontal = (position[0] - 1, position[1] - 1)
+        if mouvementY > 0:
+            posHor = (position[0], position[1] - 1)
+            posAvantHor = (position[0] - 1, position[1] - 1)
 
-            if positionHorizontal in self.etat['murs']['horizontaux'] or positionAvantHorizontal in self.etat['murs']['horizontaux']:
-                raise QuoridorError("Position given is invalid (occupied)")
-        elif(mouvementY < 0):
-            positionHorizontal = (position[0], position[1])
-            positionAvantHorizontal = (position[0] - 1, position[1])
-
-            if positionHorizontal in self.etat['murs']['horizontaux'] or positionAvantHorizontal in self.etat['murs']['horizontaux']:
+            if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
-        if(mouvementX > 0):
-            positionVertical = (position[0] - 1, position[1])
-            positionAvantVertical = (position[0] - 1, position[1] - 1)
+        elif mouvementY < 0:
+            posHor = (position[0], position[1])
+            posAvantHor = (position[0] - 1, position[1])
 
-            if positionVertical in self.etat['murs']['verticaux'] or positionAvantVertical in self.etat['murs']['verticaux']:
-                raise QuoridorError("Position given is invalid (occupied)")
-        elif(mouvementX < 0):
-            positionVertical = (position[0], position[1])
-            positionAvantVertical = (position[0], position[1] - 1)
-
-            if positionVertical in self.etat['murs']['verticaux'] or positionAvantVertical in self.etat['murs']['verticaux']:
+            if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
-        positionVertical = (position[0], position[1] - 1)
-        self.last_player = joueur
+        if mouvementX > 0:
+            posVer = (position[0] - 1, position[1])
+            posAvantVer = (position[0] - 1, position[1] - 1)
+
+            if posVer in MursVer or posAvantVer in MursVer:
+                raise QuoridorError("Position given is invalid (occupied)")
+
+        elif mouvementX < 0:
+            posVer = (position[0], position[1])
+            posAvantVer = (position[0], position[1] - 1)
+
+            if posVer in MursVer or posAvantVer in MursVer:
+                raise QuoridorError("Position given is invalid (occupied)")
+
+        posVer = (position[0], position[1] - 1)  # what is this --------------------------------888 DAVE
+
         self.etat["joueurs"][joueur - 1]["pos"] = position
+        self.last_player = joueur
 
     def état_partie(self):
         """
@@ -257,15 +287,19 @@ class Quoridor:
         if self.partie_terminée() is str:
             raise QuoridorError(f"Player {joueur} tried to run a finished game")
 
-        self.last_player = joueur
-
         graphe = construire_graphe(
             [joueur['pos'] for joueur in self.etat['joueurs']],
             self.etat['murs']['horizontaux'],
             self.etat['murs']['verticaux']
                                     )
 
-        self.déplacer_jeton(joueur, nx.shortest_path(graphe, self.etat['joueurs'][joueur - 1]['pos'], 'B' + str(joueur))[1])
+        newPos = nx.shortest_path(
+            graphe,
+            self.etat['joueurs'][joueur - 1]['pos'],
+            'B' + str(joueur)
+                                  )
+
+        self.déplacer_jeton(joueur, newPos[1])
 
     def partie_terminée(self):
         """
@@ -283,7 +317,7 @@ class Quoridor:
         else:
             return False
 
-    def placer_mur(self, joueur: int, position: tuple, orientation: str):
+    def placer_mur(self, joueur, position, orientation):
         """
         Pour le joueur spécifié, placer un mur à la position spécifiée.
 
@@ -308,8 +342,11 @@ class Quoridor:
             posHorApres = (position[0] + 1, position[1])
             posVerCorresp = (position[0], position[1] + 1)
 
-            if position in MursHor or posHorAvant in MursHor or posHorApres in MursHor or posVerCorresp in MursVer:
-                raise QuoridorError(f"There is already a wall at {position}")
+            if position in MursHor or posVerCorresp in MursVer:
+                raise QuoridorError(f"There is already a wall here")
+
+            if posHorAvant in MursHor or posHorApres in MursHor:
+                raise QuoridorError(f"There is already a wall left/right")
 
             if position[0] not in range(1, 9) or position[1] not in range(1, 9):
                 raise QuoridorError(f"Position {position} is invalid")
@@ -320,8 +357,11 @@ class Quoridor:
             posVerApres = (position[0], position[1] + 1)
             posHorCorres = (position[0] - 1, position[1])
 
-            if position in MursVer or posVerAvant in MursVer or posVerApres in MursVer or posHorCorres in MursHor:
-                raise QuoridorError(f"There is already a wall at {position}")
+            if position in MursVer or posHorCorres in MursHor:
+                raise QuoridorError(f"There is already a wall here")
+
+            if posVerAvant in MursVer or posVerApres in MursVer:
+                raise QuoridorError(f"There is already a above/below")
 
             if position[0] not in range(1, 9) or position[1] not in range(2, 10):
                 raise QuoridorError(f"Position {position} is invalid")
@@ -329,6 +369,8 @@ class Quoridor:
             self.etat['murs']['verticaux'] += [position[0], position[1]]
 
         self.etat['joueurs'][joueur]["murs"] -= 1
+        self.last_player = joueur
+
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     """
@@ -405,6 +447,6 @@ def TestPlayersNumbers(joueur):
 
 def OtherPlayer(joueur):
     if joueur == 1:
-        return 0
+        return 2
     else:
         return 1
