@@ -175,7 +175,7 @@ class Quoridor:
         if position[0] not in range(10, 1) or position[1] not in range(10, 1):
             raise QuoridorError("Position given is outside of board")
 
-        if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
+        if self.etat["joueurs"][OtherPlayer(joueur) - 1]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
         
         positionJoueur = self.etat["joueurs"][joueur]["pos"]
@@ -405,6 +405,12 @@ def TestPlayersNumbers(joueur):
 
 def OtherPlayer(joueur):
     if joueur == 1:
-        return 0
+        return 2
     else:
         return 1
+
+
+test = Quoridor(["1,2"])
+print(test)
+test.jouer_coup(1)
+print(test)
