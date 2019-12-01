@@ -9,7 +9,7 @@ def TestPlayersNumbers(joueur):
 
 def OtherPlayer(joueur):
     if joueur == 1:
-        return 0
+        return 2
     else:
         return 1
 

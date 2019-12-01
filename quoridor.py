@@ -177,7 +177,7 @@ class Quoridor:
 
         if self.etat["joueurs"][OtherPlayer(joueur)]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
-        
+
         positionJoueur = self.etat["joueurs"][joueur]["pos"]
 
         mouvementX = position[0] - self.etat["joueurs"][joueur]["pos"][0]
