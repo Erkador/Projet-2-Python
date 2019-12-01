@@ -344,7 +344,7 @@ class Quoridor:
         if(orientation == "horizontal"):
             posHorAvant = (position[0] - 1, position[1])
             posHorApres = (position[0] + 1, position[1])
-            posVerCorresp = (position[0], position[1] + 1)
+            posVerCorresp = (position[0], position[1] - 1)
 
             if position in MursHor or posVerCorresp in MursVer:
                 raise QuoridorError(f"There is already a wall here")
@@ -356,10 +356,11 @@ class Quoridor:
                 raise QuoridorError(f"Position {position} is invalid")
 
             self.etat['murs']['horizontaux'].append(position)
+
         else:
             posVerAvant = (position[0], position[1] - 1)
             posVerApres = (position[0], position[1] + 1)
-            posHorCorres = (position[0] - 1, position[1])
+            posHorCorres = (position[0], position[1] + 1)
 
             if position in MursVer or posHorCorres in MursHor:
                 raise QuoridorError(f"There is already a wall here")
