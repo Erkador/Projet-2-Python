@@ -1,12 +1,15 @@
+"""Ce module contient la classe et les fonctions nécéssaireau fonctionnement de Quoridor"""
 from collections.abc import Iterable
 import networkx as nx
 
 
 class QuoridorError(Exception):
+    """Cette classe sert à relever des erreurs au code"""
     pass
 
 
 class Quoridor:
+    """Cette classe implémente la plus grande partie du jeu"""
 
     def __init__(self, joueurs, murs=None):
         """
@@ -37,13 +40,13 @@ class Quoridor:
 
         if isinstance(joueurs[0], str):
             self.players = [
-                    {'nom': f"{joueurs[0]}", 'murs': 10, 'pos': (5, 1)},
-                    {'nom': f"{joueurs[1]}", 'murs': 10, 'pos': (5, 9)},
-                            ]
+                {'nom': f"{joueurs[0]}", 'murs': 10, 'pos': (5, 1)},
+                {'nom': f"{joueurs[1]}", 'murs': 10, 'pos': (5, 9)},
+                    ]
         else:
             self.players = joueurs
-            self.players[0]["pos"] = [self.players[0]["pos"][0],self.players[0]["pos"][1]]
-            self.players[1]["pos"] = [self.players[1]["pos"][0],self.players[1]["pos"][1]]
+            self.players[0]["pos"] = [self.players[0]["pos"][0], self.players[0]["pos"][1]]
+            self.players[1]["pos"] = [self.players[1]["pos"][0], self.players[1]["pos"][1]]
 
         if isinstance(murs, dict):
             self.murs = murs
@@ -52,7 +55,7 @@ class Quoridor:
             self.murs = {
                 'horizontaux': [],
                 'verticaux': []
-                         }
+                    }
 
         self.etat = {'joueurs': self.players, 'murs': self.murs}
 
@@ -68,24 +71,23 @@ class Quoridor:
                 self.players[i]['murs'] = val['murs']
                 self.players[i]['pos'] = val['pos']
 
-        for i, val in enumerate(self.players):
+        for i in range(2):
             x, y = self.players[i]['pos']
             if x < 1 or x > 9 or y < 1 or y > 9:
-                raise QuoridorError("Player position out of bounds")
-            if self.players[i]['murs'] > 10 or self.players[i]['murs'] < 0:
-                raise QuoridorError("Number of walls invalid")
+                raise QuoridorError(f"Player {i} out of bounds")
+            qttMurs = self.players[i]['murs']
+            if qttMurs > 10 or qttMurs < 0:
+                raise QuoridorError(f"Player {i} number of walls invalid")
 
-        if len(self.murs['horizontaux']) > 0:
-            for i in self.murs['horizontaux']:
-                x, y = i[0], i[1]
-                if x < 1 or x > 8 or y < 2 or y > 9:
-                    raise QuoridorError("Horizontal wall out of bounds")
+        for i in self.murs['horizontaux']:
+            x, y = i[0], i[1]
+            if x < 1 or x > 8 or y < 2 or y > 9:
+                raise QuoridorError("Horizontal wall out of bounds")
 
-        if len(self.murs['verticaux']) > 0:
-            for i in self.murs['verticaux']:
-                x, y = i[0], i[1]
-                if x < 2 or x > 9 or y < 1 or y > 8:
-                    raise QuoridorError("Vertical wall out of bounds")
+        for i in self.murs['verticaux']:
+            x, y = i[0], i[1]
+            if x < 2 or x > 9 or y < 1 or y > 8:
+                raise QuoridorError("Vertical wall out of bounds")
 
         placed_walls = 0
         placed_walls += len(self.murs['horizontaux']) + len(self.murs['verticaux'])
@@ -197,7 +199,6 @@ class Quoridor:
         return sortie
 
     def déplacer_jeton(self, joueur, position):
-        position = [position[0], position[1]]
         """
         Pour le joueur spécifié, déplacer son jeton à la position spécifiée.
 
@@ -207,6 +208,7 @@ class Quoridor:
         :raises QuoridorError: la position est invalide (en dehors du damier).
         :raises QuoridorError: la position est invalide pour l'état actuel du jeu.
         """
+        position = [position[0], position[1]]
         TestPlayersNumbers(joueur)
 
         if position[0] not in range(1, 10) or position[1] not in range(1, 10):
@@ -307,13 +309,13 @@ class Quoridor:
             [joueur['pos'] for joueur in self.etat['joueurs']],
             self.etat['murs']['horizontaux'],
             self.etat['murs']['verticaux']
-                                   )
+                )
 
         newPos = nx.shortest_path(
             graphe,
             self.etat['joueurs'][joueur - 1]['pos'],
             'B' + str(joueur)
-                                  )
+                )
 
         self.déplacer_jeton(joueur, newPos[1])
 
@@ -334,7 +336,6 @@ class Quoridor:
             return False
 
     def placer_mur(self, joueur, position, orientation):
-        position = [position[0], position[1]]
         """
         Pour le joueur spécifié, placer un mur à la position spécifiée.
 
@@ -346,6 +347,7 @@ class Quoridor:
         :raises QuoridorError: la position est invalide pour cette orientation.
         :raises QuoridorError: le joueur a déjà placé tous ses murs.
         """
+        position = [position[0], position[1]]
         TestPlayersNumbers(joueur)
 
         if self.etat["joueurs"][joueur - 1]["murs"] == 0:
@@ -354,7 +356,7 @@ class Quoridor:
         MursHor = self.etat['murs']['horizontaux']
         MursVer = self.etat['murs']['verticaux']
 
-        if(orientation == "horizontal"):
+        if orientation == "horizontal":
             posHorAvant = [position[0] - 1, position[1]]
             posHorApres = [position[0] + 1, position[1]]
             posVerCorresp = [position[0] + 1, position[1] - 1]
@@ -368,7 +370,7 @@ class Quoridor:
             if position[0] not in range(1, 9) or position[1] not in range(2, 10):
                 raise QuoridorError(f"Position {position} is invalid")
 
-            self.etat['murs']['horizontaux'].append([position[0],position[1]])
+            self.etat['murs']['horizontaux'].append([position[0], position[1]])
 
         else:
             posVerAvant = [position[0] - 1, position[1] - 1]
@@ -384,7 +386,7 @@ class Quoridor:
             if position[0] not in range(1, 9) or position[1] not in range(1, 9):
                 raise QuoridorError(f"Position {position} is invalid")
 
-            self.etat['murs']['verticaux'].append([position[0],position[1]])
+            self.etat['murs']['verticaux'].append([position[0], position[1]])
 
         self.etat['joueurs'][joueur - 1]["murs"] -= 1
         self.last_player = joueur
@@ -465,5 +467,4 @@ def TestPlayersNumbers(joueur):
 def OtherPlayer(joueur):
     if joueur == 1:
         return 2
-    else:
-        return 1
+    return 1
