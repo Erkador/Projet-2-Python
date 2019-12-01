@@ -42,6 +42,8 @@ class Quoridor:
                             ]
         else:
             self.players = joueurs
+            self.players[0]["pos"] = [self.players[0]["pos"][0],self.players[0]["pos"][1]]
+            self.players[1]["pos"] = [self.players[1]["pos"][0],self.players[1]["pos"][1]]
 
         if isinstance(murs, dict):
             self.murs = murs
