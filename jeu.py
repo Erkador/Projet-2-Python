@@ -3,10 +3,18 @@ from collections.abc import Iterable
 
 if __name__ == "__main__":
     """Bloc principal du module principal"""
-    joueurs = ["j1", "j2"]
-    
+    joueurs = {"joueurs": [
+        {"nom": "idul", "murs": 7, "pos": [5, 1]},
+        {"nom": "automate", "murs": 7, "pos": [5, 9]}
+     ],
+     "murs": {
+        "horizontaux": [[5, 4], [2, 4], [8, 5]],
+        "verticaux": [[4, 5], [7, 4], [5, 3]]
+        }
+     }
+
     jeu = quoridor.Quoridor(joueurs)
-    
+
     while True:
         ETAT = jeu.état_partie()
         print(jeu)
@@ -23,6 +31,7 @@ if __name__ == "__main__":
         else:
             print("Commande n'existe pas")
             continue
+        print(jeu)
         if jeu.partie_terminée() == False:
             jeu.jouer_coup(2)
         else:
