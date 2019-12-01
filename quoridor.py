@@ -246,7 +246,7 @@ class Quoridor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementX < 0:
-            posVer = ((position[0] +1), position[1])
+            posVer = ((position[0] + 1), position[1])
             posAvantVer = ((position[0] + 1), position[1] - 1)
 
             if posVer in MursVer or posAvantVer in MursVer:
@@ -296,7 +296,7 @@ class Quoridor:
         """
         TestPlayersNumbers(joueur)
 
-        if self.partie_terminée() is str:
+        if isinstance(self.partie_terminée(), str):
             raise QuoridorError(f"Player {joueur} tried to run a finished game")
 
         graphe = construire_graphe(
@@ -319,13 +319,13 @@ class Quoridor:
 
         :returns: le nom du gagnant si la partie est terminée; False autrement.
         """
-        if self.last_player == 1:
-            goal = 9
-        else:
-            goal = 1
 
-        if self.etat["joueurs"][self.last_player - 1]["pos"][1] == goal:
-            return self.etat["joueurs"][self.last_player - 1]["nom"]
+        if self.etat["joueurs"][0]["pos"][1] == 9:
+            return self.etat["joueurs"][0]["nom"]
+
+        elif self.etat["joueurs"][1]["pos"][1] == 1:
+            return self.etat["joueurs"][1]["nom"]
+
         else:
             return False
 
@@ -350,9 +350,9 @@ class Quoridor:
         MursVer = self.etat['murs']['verticaux']
 
         if(orientation == "horizontal"):
-            posHorAvant = (position[0] - 1, position[1])
-            posHorApres = (position[0] + 1, position[1])
-            posVerCorresp = (position[0] + 1, position[1] - 1)
+            posHorAvant = [position[0] - 1, position[1]]
+            posHorApres = [position[0] + 1, position[1]]
+            posVerCorresp = [position[0] + 1, position[1] - 1]
 
             if position in MursHor or posVerCorresp in MursVer:
                 raise QuoridorError(f"There is already a wall here")
@@ -363,12 +363,12 @@ class Quoridor:
             if position[0] not in range(1, 9) or position[1] not in range(2, 10):
                 raise QuoridorError(f"Position {position} is invalid")
 
-            self.etat['murs']['horizontaux'].append(position)
+            self.etat['murs']['horizontaux'].append([position[0],position[1]])
 
         else:
-            posVerAvant = (position[0] - 1, position[1] - 1)
-            posVerApres = (position[0], position[1] + 1)
-            posHorCorres = (position[0] - 1, position[1] + 1)
+            posVerAvant = [position[0] - 1, position[1] - 1]
+            posVerApres = [position[0], position[1] + 1]
+            posHorCorres = [position[0] - 1, position[1] + 1]
 
             if position in MursVer or posHorCorres in MursHor:
                 raise QuoridorError(f"There is already a wall here")
@@ -379,7 +379,7 @@ class Quoridor:
             if position[0] not in range(1, 9) or position[1] not in range(1, 9):
                 raise QuoridorError(f"Position {position} is invalid")
 
-            self.etat['murs']['verticaux'].append(position)
+            self.etat['murs']['verticaux'].append([position[0],position[1]])
 
         self.etat['joueurs'][joueur - 1]["murs"] -= 1
         self.last_player = joueur

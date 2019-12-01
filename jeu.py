@@ -6,17 +6,20 @@ if __name__ == "__main__":
     """Bloc principal du module principal"""
 
     joueurs = [
-        {"nom": "idul", "murs": 7, "pos": [5, 5]},
-        {"nom": "automate", "murs": 3, "pos": [8, 6]}
+        {"nom": "idul", "murs": 5, "pos": [5, 5]},
+        {"nom": "automate", "murs": 10, "pos": [3, 4]}
                ]
 
     murs = {
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
-        "verticaux": [[6, 2], [4, 4], [2, 6], [7, 5], [7, 7]]
+        "verticaux": []
                }
 
-    #jeu = quoridor.Quoridor(joueurs, murs)
-    jeu = quoridor.Quoridor(["j1","j2"])
+    jeu = quoridor.Quoridor(joueurs, murs)
+    #jeu = quoridor.Quoridor(["j1", "j2"])
+
+    # print(jeu.etat['murs']['horizontaux'])
+    # print(jeu.etat['murs']['verticaux'])
 
     while True:
         ETAT = jeu.état_partie()
@@ -36,7 +39,8 @@ if __name__ == "__main__":
             continue
         print(jeu)
         if jeu.partie_terminée() is False:
-            jeu.jouer_coup(2)
+            pass
+            #jeu.jouer_coup(2)
         else:
-            print(jeu.partie_terminée())
+            print("" + jeu.partie_terminée() + " a gagné")
             break
