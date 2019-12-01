@@ -27,15 +27,22 @@ class Quoridor:
 
         """
         if not isinstance(joueurs, Iterable):
-            raise QuoridorError("Not iterable")
+            raise QuoridorError("Players is not an iterable")
+
         if len(joueurs) > 2:
-            raise QuoridorError("more than two players given")
+            raise QuoridorError("More than two players were given")
+
         if murs and not isinstance(murs, dict):
-            raise QuoridorError("Murs is present but not dict")
-        self.players = [
-                {'nom': "", 'murs': 10, 'pos': (5, 1)},
-                {'nom': "", 'murs': 10, 'pos': (5, 9)},
-            ]
+            raise QuoridorError("Walls given are not in a dictionary")
+
+        if isinstance(joueurs[0], str):
+            self.players = [
+                    {'nom': f"{joueurs[0]}", 'murs': 10, 'pos': (5, 1)},
+                    {'nom': f"{joueurs[1]}", 'murs': 10, 'pos': (5, 9)},
+                            ]
+        else:
+            self.players = joueurs
+
         if murs is None:
             self.murs = {
                 'horizontaux': [],
@@ -43,6 +50,7 @@ class Quoridor:
                          }
         else:
             self.murs = murs
+
         self.etat = {'joueurs': self.players, 'murs': self.murs}
 
         for i, val in enumerate(joueurs):
@@ -175,7 +183,7 @@ class Quoridor:
                 grille[19 - 2 * i[1]][4 * i[0] - 1 + e] = "-"
         for i in murs_v:
             for e in range(3):
-                grille[18 - (2 * i[1] + e)][4 * i[0] + 2] = "|"
+                grille[18 - (2 * i[1] + e)][4 * i[0] - 2] = "|"
         grille[18 - 2 * pos_1[1]][4 * pos_1[0]] = "1"
         grille[18 - 2 * pos_2[1]][4 * pos_2[0]] = "2"
         jeu = ""
@@ -295,7 +303,7 @@ class Quoridor:
             [joueur['pos'] for joueur in self.etat['joueurs']],
             self.etat['murs']['horizontaux'],
             self.etat['murs']['verticaux']
-                                    )
+                                   )
 
         newPos = nx.shortest_path(
             graphe,
@@ -344,7 +352,7 @@ class Quoridor:
         if(orientation == "horizontal"):
             posHorAvant = (position[0] - 1, position[1])
             posHorApres = (position[0] + 1, position[1])
-            posVerCorresp = (position[0], position[1] - 1)
+            posVerCorresp = (position[0] + 1, position[1] - 1)
 
             if position in MursHor or posVerCorresp in MursVer:
                 raise QuoridorError(f"There is already a wall here")
@@ -358,9 +366,9 @@ class Quoridor:
             self.etat['murs']['horizontaux'].append(position)
 
         else:
-            posVerAvant = (position[0], position[1] - 1)
+            posVerAvant = (position[0] - 1, position[1] - 1)
             posVerApres = (position[0], position[1] + 1)
-            posHorCorres = (position[0], position[1] + 1)
+            posHorCorres = (position[0] - 1, position[1] + 1)
 
             if position in MursVer or posHorCorres in MursHor:
                 raise QuoridorError(f"There is already a wall here")
