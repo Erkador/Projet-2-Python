@@ -175,7 +175,7 @@ class Quoridor:
                 grille[19 - 2 * i[1]][4 * i[0] - 1 + e] = "-"
         for i in murs_v:
             for e in range(3):
-                grille[18 - (2 * i[1] + e)][4 * i[0] + 2] = "|"
+                grille[18 - (2 * i[1] + e)][4 * i[0] - 2] = "|"
         grille[18 - 2 * pos_1[1]][4 * pos_1[0]] = "1"
         grille[18 - 2 * pos_2[1]][4 * pos_2[0]] = "2"
         jeu = ""
@@ -217,15 +217,15 @@ class Quoridor:
         MursVer = self.etat['murs']['verticaux']
 
         if mouvementY > 0:
-            posHor = (position[0], position[1] - 1)
-            posAvantHor = (position[0] - 1, position[1] - 1)
+            posHor = (position[0], position[1])
+            posAvantHor = ((position[0] - 1), position[1])
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementY < 0:
-            posHor = (position[0], position[1])
-            posAvantHor = (position[0] - 1, position[1])
+            posHor = (position[0], (position[1] + 1))
+            posAvantHor = ((position[0] - 1), (position[1] + 1))
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
