@@ -43,13 +43,14 @@ class Quoridor:
         else:
             self.players = joueurs
 
-        if murs is None:
+        if isinstance(murs, dict):
+            self.murs = murs
+
+        else:
             self.murs = {
                 'horizontaux': [],
                 'verticaux': []
                          }
-        else:
-            self.murs = murs
 
         self.etat = {'joueurs': self.players, 'murs': self.murs}
 
@@ -194,6 +195,7 @@ class Quoridor:
         return sortie
 
     def déplacer_jeton(self, joueur, position):
+        position = [position[0], position[1]]
         """
         Pour le joueur spécifié, déplacer son jeton à la position spécifiée.
 
@@ -225,29 +227,29 @@ class Quoridor:
         MursVer = self.etat['murs']['verticaux']
 
         if mouvementY > 0:
-            posHor = (position[0], position[1])
-            posAvantHor = ((position[0] - 1), position[1])
+            posHor = [position[0], position[1]]
+            posAvantHor = [(position[0] - 1), position[1]]
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementY < 0:
-            posHor = (position[0], (position[1] + 1))
-            posAvantHor = ((position[0] - 1), (position[1] + 1))
+            posHor = [position[0], (position[1] + 1)]
+            posAvantHor = [(position[0] - 1), (position[1] + 1)]
 
             if posHor in MursHor or posAvantHor in MursHor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         if mouvementX > 0:
-            posVer = (position[0], position[1])
-            posAvantVer = (position[0], position[1] - 1)
+            posVer = [position[0], position[1]]
+            posAvantVer = [position[0], position[1] - 1]
 
             if posVer in MursVer or posAvantVer in MursVer:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         elif mouvementX < 0:
-            posVer = ((position[0] + 1), position[1])
-            posAvantVer = ((position[0] + 1), position[1] - 1)
+            posVer = [(position[0] + 1), position[1]]
+            posAvantVer = [(position[0] + 1), position[1] - 1]
 
             if posVer in MursVer or posAvantVer in MursVer:
                 raise QuoridorError("Position given is invalid (occupied)")
@@ -330,6 +332,7 @@ class Quoridor:
             return False
 
     def placer_mur(self, joueur, position, orientation):
+        position = [position[0], position[1]]
         """
         Pour le joueur spécifié, placer un mur à la position spécifiée.
 
@@ -350,9 +353,9 @@ class Quoridor:
         MursVer = self.etat['murs']['verticaux']
 
         if(orientation == "horizontal"):
-            posHorAvant = (position[0] - 1, position[1])
-            posHorApres = (position[0] + 1, position[1])
-            posVerCorresp = (position[0] + 1, position[1] - 1)
+            posHorAvant = [position[0] - 1, position[1]]
+            posHorApres = [position[0] + 1, position[1]]
+            posVerCorresp = [position[0] + 1, position[1] - 1]
 
             if position in MursHor or posVerCorresp in MursVer:
                 raise QuoridorError(f"There is already a wall here")
@@ -366,9 +369,9 @@ class Quoridor:
             self.etat['murs']['horizontaux'].append(position)
 
         else:
-            posVerAvant = (position[0] - 1, position[1] - 1)
-            posVerApres = (position[0], position[1] + 1)
-            posHorCorres = (position[0] - 1, position[1] + 1)
+            posVerAvant = [position[0] - 1, position[1] - 1]
+            posVerApres = [position[0], position[1] + 1]
+            posHorCorres = [position[0] - 1, position[1] + 1]
 
             if position in MursVer or posHorCorres in MursHor:
                 raise QuoridorError(f"There is already a wall here")

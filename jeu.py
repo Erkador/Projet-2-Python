@@ -13,10 +13,12 @@ if __name__ == "__main__":
     murs = {
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 6], [7, 5], [7, 7]]
-               }
+            }
 
-    # jeu = quoridor.Quoridor(joueurs, murs)
-    jeu = quoridor.Quoridor(["j1", "j2"])
+    jeu = quoridor.Quoridor(joueurs, murs)
+    # jeu = quoridor.Quoridor(["j1", "j2"])
+
+    print(jeu.etat)
 
     # print(jeu.etat['murs']['horizontaux'])
     # print(jeu.etat['murs']['verticaux'])
@@ -37,6 +39,7 @@ if __name__ == "__main__":
         else:
             print("Commande n'existe pas")
             continue
+        print(jeu.murs)
         print(jeu)
         if jeu.partie_terminée() is False:
             jeu.jouer_coup(2)
