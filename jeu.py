@@ -1,19 +1,22 @@
 import quoridor
-from collections.abc import Iterable
+# from collections.abc import Iterable
+
 
 if __name__ == "__main__":
     """Bloc principal du module principal"""
-    joueurs = {"joueurs": [
-        {"nom": "idul", "murs": 7, "pos": [5, 1]},
-        {"nom": "automate", "murs": 7, "pos": [5, 9]}
-     ],
-     "murs": {
-        "horizontaux": [[5, 4], [2, 4], [8, 5]],
-        "verticaux": [[4, 5], [7, 4], [5, 3]]
-        }
-     }
 
-    jeu = quoridor.Quoridor(joueurs)
+    joueurs = [
+        {"nom": "idul", "murs": 7, "pos": [5, 5]},
+        {"nom": "automate", "murs": 3, "pos": [8, 6]}
+               ]
+
+    murs = {
+        "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
+        "verticaux": [[6, 2], [4, 4], [2, 6], [7, 5], [7, 7]]
+               }
+
+    #jeu = quoridor.Quoridor(joueurs, murs)
+    jeu = quoridor.Quoridor(["j1","j2"])
 
     while True:
         ETAT = jeu.état_partie()
@@ -32,7 +35,7 @@ if __name__ == "__main__":
             print("Commande n'existe pas")
             continue
         print(jeu)
-        if jeu.partie_terminée() == False:
+        if jeu.partie_terminée() is False:
             jeu.jouer_coup(2)
         else:
             print(jeu.partie_terminée())
