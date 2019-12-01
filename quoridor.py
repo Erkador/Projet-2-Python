@@ -296,7 +296,7 @@ class Quoridor:
         """
         TestPlayersNumbers(joueur)
 
-        if self.partie_terminée() is str:
+        if isinstance(self.partie_terminée(), str):
             raise QuoridorError(f"Player {joueur} tried to run a finished game")
 
         graphe = construire_graphe(
@@ -319,13 +319,13 @@ class Quoridor:
 
         :returns: le nom du gagnant si la partie est terminée; False autrement.
         """
-        if self.last_player == 1:
-            goal = 9
-        else:
-            goal = 1
 
-        if self.etat["joueurs"][self.last_player - 1]["pos"][1] == goal:
-            return self.etat["joueurs"][self.last_player - 1]["nom"]
+        if self.etat["joueurs"][0]["pos"][1] == 9:
+            return self.etat["joueurs"][0]["nom"]
+
+        elif self.etat["joueurs"][1]["pos"][1] == 1:
+            return self.etat["joueurs"][1]["nom"]
+
         else:
             return False
 

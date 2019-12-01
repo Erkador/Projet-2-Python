@@ -17,6 +17,9 @@ if __name__ == "__main__":
 
     jeu = quoridor.Quoridor(joueurs, murs)
 
+    # print(jeu.etat['murs']['horizontaux'])
+    # print(jeu.etat['murs']['verticaux'])
+
     while True:
         ETAT = jeu.état_partie()
         print(jeu)
