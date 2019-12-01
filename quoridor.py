@@ -207,53 +207,53 @@ class Quoridor:
         :raises QuoridorError: la position est invalide (en dehors du damier).
         :raises QuoridorError: la position est invalide pour l'état actuel du jeu.
         """
-        TestPlayersNumbers(joueur)
+        test_players_numbers(joueur)
 
         if position[0] not in range(1, 10) or position[1] not in range(1, 10):
             raise QuoridorError("Position given is outside of board")
 
-        if self.etat["joueurs"][OtherPlayer(joueur) - 1]["pos"] == position:
+        if self.etat["joueurs"][other_player(joueur) - 1]["pos"] == position:
             raise QuoridorError("Position given is invalid (occupied)")
 
         if self.etat["joueurs"][joueur - 1]["pos"] == position:
             raise QuoridorError("Player cannot stay immobile")
 
-        posJoueur = self.etat["joueurs"][joueur - 1]["pos"]
-        mouvementX = position[0] - posJoueur[0]
-        mouvementY = position[1] - posJoueur[1]
+        pos_joueur = self.etat["joueurs"][joueur - 1]["pos"]
+        mouvement_x = position[0] - pos_joueur[0]
+        mouvement_y = position[1] - pos_joueur[1]
 
-        if abs(mouvementX) + abs(mouvementY) > 2:
+        if abs(mouvement_x) + abs(mouvement_y) > 2:
             raise QuoridorError("Player tried to move more than 2 tiles")
 
-        MursHor = self.etat['murs']['horizontaux']
-        MursVer = self.etat['murs']['verticaux']
+        murs_hor = self.etat['murs']['horizontaux']
+        murs_ver = self.etat['murs']['verticaux']
 
-        if mouvementY > 0:
-            posHor = [position[0], position[1]]
-            posAvantHor = [(position[0] - 1), position[1]]
+        if mouvement_y > 0:
+            pos_hor = [position[0], position[1]]
+            pos_avant_hor = [(position[0] - 1), position[1]]
 
-            if posHor in MursHor or posAvantHor in MursHor:
+            if pos_hor in murs_hor or pos_avant_hor in murs_hor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
-        elif mouvementY < 0:
-            posHor = [position[0], (position[1] + 1)]
-            posAvantHor = [(position[0] - 1), (position[1] + 1)]
+        elif mouvement_y < 0:
+            pos_hor = [position[0], (position[1] + 1)]
+            pos_avantHor = [(position[0] - 1), (position[1] + 1)]
 
-            if posHor in MursHor or posAvantHor in MursHor:
+            if pos_hor in murs_hor or pos_avant_hor in murs_hor:
                 raise QuoridorError("Position given is invalid (occupied)")
 
-        if mouvementX > 0:
-            posVer = [position[0], position[1]]
-            posAvantVer = [position[0], position[1] - 1]
+        if mouvement_x > 0:
+            pos_ver = [position[0], position[1]]
+            pos_avant_ver = [position[0], position[1] - 1]
 
-            if posVer in MursVer or posAvantVer in MursVer:
+            if pos_ver in murs_ver or pos_avant_ver in murs_ver:
                 raise QuoridorError("Position given is invalid (occupied)")
 
-        elif mouvementX < 0:
-            posVer = [(position[0] + 1), position[1]]
-            posAvantVer = [(position[0] + 1), position[1] - 1]
+        elif mouvement_x < 0:
+            pos_ver = [(position[0] + 1), position[1]]
+            pos_avant_ver = [(position[0] + 1), position[1] - 1]
 
-            if posVer in MursVer or posAvantVer in MursVer:
+            if pos_ver in murs_ver or pos_avant_ver in murs_ver:
                 raise QuoridorError("Position given is invalid (occupied)")
 
         self.etat["joueurs"][joueur - 1]["pos"] = position
@@ -298,7 +298,7 @@ class Quoridor:
         :raises QuoridorError: le numéro du joueur est autre que 1 ou 2.
         :raises QuoridorError: la partie est déjà terminée.
         """
-        TestPlayersNumbers(joueur)
+        test_players_numbers(joueur)
 
         if isinstance(self.partie_terminée(), str):
             raise QuoridorError(f"Player {joueur} tried to run a finished game")
@@ -309,13 +309,13 @@ class Quoridor:
             self.etat['murs']['verticaux']
                                    )
 
-        newPos = nx.shortest_path(
+        new_pos = nx.shortest_path(
             graphe,
             self.etat['joueurs'][joueur - 1]['pos'],
             'B' + str(joueur)
                                   )
 
-        self.déplacer_jeton(joueur, newPos[1])
+        self.déplacer_jeton(joueur, new_pos[1])
 
     def partie_terminée(self):
         """
@@ -346,23 +346,23 @@ class Quoridor:
         :raises QuoridorError: la position est invalide pour cette orientation.
         :raises QuoridorError: le joueur a déjà placé tous ses murs.
         """
-        TestPlayersNumbers(joueur)
+        test_players_numbers(joueur)
 
         if self.etat["joueurs"][joueur - 1]["murs"] == 0:
             raise QuoridorError(f"Player {joueur} has no more walls")
 
-        MursHor = self.etat['murs']['horizontaux']
-        MursVer = self.etat['murs']['verticaux']
+        murs_hor = self.etat['murs']['horizontaux']
+        murs_ver = self.etat['murs']['verticaux']
 
         if(orientation == "horizontal"):
-            posHorAvant = [position[0] - 1, position[1]]
-            posHorApres = [position[0] + 1, position[1]]
-            posVerCorresp = [position[0] + 1, position[1] - 1]
+            pos_hor_avant = [position[0] - 1, position[1]]
+            pos_hor_apres = [position[0] + 1, position[1]]
+            pos_ver_corresp = [position[0] + 1, position[1] - 1]
 
-            if position in MursHor or posVerCorresp in MursVer:
+            if position in murs_hor or pos_ver_corresp in murs_ver:
                 raise QuoridorError(f"There is already a wall here")
 
-            if posHorAvant in MursHor or posHorApres in MursHor:
+            if pos_hor_avant in murs_hor or pos_hor_apres in murs_hor:
                 raise QuoridorError(f"There is already a wall left/right")
 
             if position[0] not in range(1, 9) or position[1] not in range(2, 10):
@@ -371,14 +371,14 @@ class Quoridor:
             self.etat['murs']['horizontaux'].append([position[0],position[1]])
 
         else:
-            posVerAvant = [position[0] - 1, position[1] - 1]
-            posVerApres = [position[0], position[1] + 1]
-            posHorCorres = [position[0] - 1, position[1] + 1]
+            pos_ver_avant = [position[0] - 1, position[1] - 1]
+            pos_ver_apres = [position[0], position[1] + 1]
+            pos_hor_corresp = [position[0] - 1, position[1] + 1]
 
-            if position in MursVer or posHorCorres in MursHor:
+            if position in murs_ver or pos_hor_corresp in murs_hor:
                 raise QuoridorError(f"There is already a wall here")
 
-            if posVerAvant in MursVer or posVerApres in MursVer:
+            if pos_ver_avant in murs_ver or pos_ver_apres in murs_ver:
                 raise QuoridorError(f"There is already a wall above/below")
 
             if position[0] not in range(1, 9) or position[1] not in range(1, 9):
@@ -457,12 +457,12 @@ def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     return graphe
 
 
-def TestPlayersNumbers(joueur):
+def test_players_numbers(joueur):
     if joueur not in [1, 2]:
         raise QuoridorError(f"Player {joueur} is not a valid #")
 
 
-def OtherPlayer(joueur):
+def other_player(joueur):
     if joueur == 1:
         return 2
     else:
